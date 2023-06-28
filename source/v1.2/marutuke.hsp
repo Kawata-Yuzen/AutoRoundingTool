@@ -1,0 +1,51 @@
+#module
+#defcfunc date_now int flag  
+#include "user32.as"
+notesel data
+*create_win
+screen 0,ginfo(20),ginfo(21)
+GetWindowLong hwnd, -16
+SetWindowLong hwnd, -16, stat | $10000 | $40000
+width 900,500
+width ,,0,0
+qname = ""
+base = ""
+ans = ""
+name = ""
+count = 0
+title "丸付けツール v1.2 HSP3 Remake Edition"
+mes "問題名："
+input qname,300,,1000
+mes "答え："
+input base,300,,1000
+mes "生徒の回答："
+input ans,300,,1000
+mes "生徒の名前（任意）："
+input name,300,,1000
+button "チェック!", *check
+button "書き出し", *make
+button "画面を初期化", *create_win
+font "", 15
+stop
+
+*check
+	if ans = base{
+		mes name + "さんの問題名 " + qname + "の回答は正解です！"
+		noteadd name + "さんの問題名 " + qname + "の回答は正解です！",count
+		count = count + 1
+	}
+	else{
+		mes name + "さんの問題名 " + qname + "の回答は不正解です・・・。"
+		noteadd name + "さんの問題名 " + qname + "の回答は不正解です・・・。",count
+		count = count + 1
+	}
+	stop
+
+*make
+	sdim day, 1, 7 
+    day = "日", "月", "火", "水", "木", "金", "土"
+    date = "" + gettime(0) + "年" + gettime(1) + "月" + gettime(3) + "日"
+    if flag = 0 : return date
+    return date + "(" + day(gettime(2)) + ")"
+    #global
+	notesave date_now() + "の回答の記録.txt"
